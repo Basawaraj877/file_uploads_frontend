@@ -1,0 +1,49 @@
+<body  style="background-color:whitesmoke; height: 800px;">
+  <nav class="navbar  navbar-dark bg-dark text-white">
+    <h2 class="ms-3">Manage Files</h2>
+  </nav>
+  
+  <!-- <div><h2 class="text-center mt-3 p-3" style="color: forestgreen ;text-shadow: black 2px 2px;">Manage Files</h2></div> -->
+
+  <div class="container mt-5 bg-white">
+    <div class="row p-4" style="box-shadow: 7px 7px 15px rgb(171, 182, 243),-3px -3px 10px rgb(171, 182, 243)">
+      <div class="p-3">
+        <form (ngSubmit)="onSubmit()" #fileUploadForm="ngForm" >
+          <div class="form-group ">
+            <label  for="fileInput" style="color:rgb(7, 126, 245);font-weight:bold;font-size: 25px;">Choose File(XLS or XLSX) :&nbsp;</label>
+            <input type="file" (change)="onFileSelect($event)" name="file"  id="fileInput" class="form-control-file" style="background-color: darkgrey;">
+            <div *ngIf="selectedFile && !isValidFileType " class="text-danger mt-2">
+              Invalid file type. Only XLS and XLSX files are allowed.
+            </div>
+          </div><br>
+          <button type="submit" [disabled]="!selectedFile || (selectedFile && !isValidFileType)" class="btn btn-primary">Upload</button>
+        </form>
+        <div class="mt-4">
+        <b><i style="color:green;  width:250px;" *ngIf="msg"> {{ msg }}</i>
+         <i style="color: red;" *ngIf="msgF">{{msgF}}</i></b>
+        </div>
+      </div><br>
+      <div class="p-4">
+        <h2 style="color: rgb(250, 4, 4);"><b>File List</b></h2>
+        <table class="table border border-3" >
+          <thead>
+            <tr>
+              <th>File Name</th>
+              <th>Date Of Upload</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let file of files">
+              <td>{{ file.fileName }}</td>
+              <td>{{file.date}}</td>
+              <td>
+                <button class="btn btn-primary btn-sm" (click)="downloadFile(file.fileName)">Download</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
