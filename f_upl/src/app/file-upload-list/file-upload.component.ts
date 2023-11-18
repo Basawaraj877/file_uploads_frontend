@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FileService } from '../file.service';
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver';//we need to install 'file-saver' from npm as -> npm install file-saver
 
 @Component({
   selector: 'app-file-upload',
