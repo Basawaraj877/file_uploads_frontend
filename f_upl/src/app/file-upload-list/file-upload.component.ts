@@ -13,14 +13,19 @@ export class FileUploadComponent implements OnInit{
   msgF='';
 isValidFileType=true;
  files: any[] = [];
-
+ index:number=1;
   constructor(private fileService: FileService) {}
 
   //list of files
   ngOnInit(): void {
+
+    const token='eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaXZhYmFidUBnbWFpbC5jb20iLCJpYXQiOjE3MDExNDQ3MTEsImV4cCI6MTcwMTE2MjcxMX0.8y2kDD6E-p87LtMFpNduAwKNTQuHHJF-SLQ9UabECzoiqQQ0evgdgfMwaKR1it52U_ytWtNcA0P6LTTYLFbW7g';
+    localStorage.setItem('token',token);
+
     this.fileService.getFiles().subscribe(
-      (data: any) => {
-        this.files = data;
+      (response: any) => {
+        console.log(response.response.data);
+        this.files = response.response.data;
       },
       (error) => {
         console.error(error);
@@ -53,11 +58,10 @@ isValidFileType=true;
       ) {
 
        this.isValidFileType=false;
-       // this.selectedFile = null;
-        console.error('Invalid file type. Only XLS and XLSX files are allowed.');
-       // this.msg='Only XLS and XLSX files are allowed'
+       console.error('Invalid file type. Only XLS and XLSX files are allowed.');
 
-        
+       // this.selectedFile = null;
+       // this.msg='Only XLS and XLSX files are allowed'  
       }
       else{
         this.isValidFileType=true;
@@ -70,27 +74,40 @@ isValidFileType=true;
       this.fileService.uploadFile(this.selectedFile).subscribe(
         (response) => {
           console.log(response);
-          this.msg='File uploaded successfully...'
+          if(response.errorCode===20){
+          this.msg=response.message;
           this.msgF='';
-          
-
-          //updating file-list
-          this.fileService.getFiles().subscribe(
-            (data: any) => {
-              this.files = data;
-            })
-        },
-        
-        (error) => {
-          console.error(error);
-          if(error.status===302){
-            this.msgF='File with same "NAME" already exist!';
+          }
+          else if(response.errorCode===302){
+            this.msgF=response.message;
+            this.msg='';
+          }
+          else if(response.errorCode===51){
+            this.msgF=response.message;
             this.msg='';
           }
           else{
             this.msgF='File upload failed!';
             this.msg='';
           }
+
+          //updating file-list
+          this.fileService.getFiles().subscribe(
+            (response: any) => {
+              this.files = response.response.data;
+            })
+        },
+        
+        (error) => {
+          console.error(error);
+          // if(error.status===302){
+          //   this.msgF='File with same "NAME" already exist!';
+          //   this.msg='';
+          // }
+          // else{
+             this.msgF='File upload failed!';
+             this.msg='';
+          // }
         }
       );
     }

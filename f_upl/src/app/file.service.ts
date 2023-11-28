@@ -7,26 +7,43 @@ import { Observable } from 'rxjs';
 })
 export class FileService {
 
-  private apiUrl = 'http://localhost:8080'; 
+  private apiUrl = 'http://localhost:8383'; 
 
   constructor(private http: HttpClient) {}
+  
+  //creating headers
+   getHeaders():HttpHeaders{
+    const token=localStorage.getItem('token');
+    return new HttpHeaders().set('Authorization',`Bearer ${token}`);
+   }
 
   uploadFile(file: File): Observable<any> {
     const formData: FormData = new FormData();
     formData.append('f', file, file.name);
     
+    const headers=this.getHeaders();
 
-    return this.http.post(`${this.apiUrl}/files/upload`, formData);
+    return this.http.post(`${this.apiUrl}/files/upload`, formData,{headers});
   }
 
   getFiles(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/files/getFiles`);
+
+  //  let token=localStorage.getItem('token');
+  //  const headerOption={
+  //   headers:new HttpHeaders({
+  //     'Authorization':'Bearer '+token
+  //   })
+  //  }
+  const headers=this.getHeaders();
+    return this.http.get(`${this.apiUrl}/files/getFiles`,{headers});
   }
 
   
   downloadFile(fileName: string): Observable<Blob> {
+    const headers=this.getHeaders();
+    
     return this.http.get(`${this.apiUrl}/files/download/${fileName}`, {
-      responseType: 'blob',
+      responseType: 'blob',headers
     });
   }
 }

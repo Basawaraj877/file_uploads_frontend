@@ -28,13 +28,15 @@
         <table class="table border border-3" >
           <thead>
             <tr>
+              <th>S.No</th>
               <th>File Name</th>
               <th>Date Of Upload</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let file of files">
+            <tr *ngFor="let file of files;let x=index ">
+              <td>{{x+1}}</td>
               <td>{{ file.fileName }}</td>
               <td>{{file.date}}</td>
               <td>
